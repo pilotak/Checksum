@@ -60,10 +60,10 @@ static const uint16_t crc16_table[] = {
     0X8201, 0X42C0, 0X4380, 0X8341, 0X4100, 0X81C1, 0X8081, 0X4040
 };
 
-Checksum::Checksum() {
+Checksum::Checksum(){
 }
 
-uint16_t Checksum::get_crc16(const uint8_t * data, uint32_t len) {
+uint16_t Checksum::get_modbus(const uint8_t * data, uint32_t len) {
     uint8_t temp;
     uint16_t result = 0xFFFF;
 
@@ -76,10 +76,10 @@ uint16_t Checksum::get_crc16(const uint8_t * data, uint32_t len) {
     return result;
 }
 
-bool Checksum::is_valid_crc16(const uint8_t * data, uint32_t len) {
-    uint16_t temp = get_xor(data, len - 2);
+bool Checksum::is_valid_modbus(const uint8_t * data, uint32_t len) {
+    uint16_t temp = get_modbus(data, len - 2);
 
-    return temp == ((data[len - 2] << 8) | data[len - 1]);
+    return temp == ((data[len - 1] << 8) | data[len - 2]);
 }
 
 uint8_t Checksum::get_xor(const uint8_t * data, uint32_t len) {
@@ -98,30 +98,17 @@ bool Checksum::is_valid_xor(const uint8_t * data, uint32_t len) {
     return temp == data[len - 1];
 }
 
-uint8_t Checksum::get_crc8(const uint8_t * data, uint32_t len) {
-    uint8_t result = 0x00;
-    uint8_t temp;
+uint8_t Checksum::get_maxim(uint8_t * data, uint32_t len) {
+    MbedCRC<0x31, 8> ct(0, 0, false, false);
+    uint32_t result = 0;
 
-    while (len--) {
-        uint8_t extract = *data++;
+    ct.compute(data, len, &result);
 
-        for (uint8_t i = 8; i; i--) {
-            temp = (result ^ extract) & 0x01;
-            result >>= 1;
-
-            if (temp) {
-                result ^= 0x8C;
-            }
-
-            extract >>= 1;
-        }
-    }
-
-    return result;
+    return (uint8_t)result;
 }
 
-bool Checksum::is_valid_crc8(const uint8_t * data, uint32_t len) {
-    uint8_t temp = get_crc8(data, len - 1);
+bool Checksum::is_valid_maxim(uint8_t * data, uint32_t len) {
+    uint8_t temp = get_maxim(data, len - 1);
 
     return temp == data[len - 1];
 }

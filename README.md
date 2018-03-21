@@ -13,10 +13,10 @@ int main() {
 
     data[0] = 0;
 
-    printf("xor: %u, crc8: %u, crc16: %u\n",
+    printf("xor: %u, maxim_crc8: %u, modbus_crc16: %u\n",
            checksum.get_xor(data, sizeof(data)),
-           checksum.get_crc8(data, sizeof(data)),
-           checksum.get_crc16(data, sizeof(data)));
+           checksum.get_maxim(data, sizeof(data)),
+           checksum.get_modbus(data, sizeof(data)));
 
     while (true);
 }

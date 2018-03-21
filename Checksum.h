@@ -34,12 +34,12 @@ class Checksum {
     };
 
     Checksum();
-    uint16_t get_crc16(const uint8_t * data, uint32_t len);
-    bool is_valid_crc16(const uint8_t * data, uint32_t len);
+    uint16_t get_modbus(const uint8_t * data, uint32_t len);
+    bool is_valid_modbus(const uint8_t * data, uint32_t len);
     uint8_t get_xor(const uint8_t * data, uint32_t len);
     bool is_valid_xor(const uint8_t * data, uint32_t len);
-    uint8_t get_crc8(const uint8_t * data, uint32_t len);
-    bool is_valid_crc8(const uint8_t * data, uint32_t len);
+    uint8_t get_maxim(uint8_t * data, uint32_t len);
+    bool is_valid_maxim(uint8_t * data, uint32_t len);
 };
 
 #endif
