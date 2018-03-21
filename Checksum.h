@@ -28,18 +28,13 @@ SOFTWARE.
 
 class Checksum {
   public:
-    enum Algorithm {
-        CRC16,
-        XOR
-    };
-
     Checksum();
     uint16_t get_modbus(const uint8_t * data, uint32_t len);
     bool is_valid_modbus(const uint8_t * data, uint32_t len);
     uint8_t get_xor(const uint8_t * data, uint32_t len);
     bool is_valid_xor(const uint8_t * data, uint32_t len);
-    uint8_t get_maxim(uint8_t * data, uint32_t len);
-    bool is_valid_maxim(uint8_t * data, uint32_t len);
+    uint8_t get_maxim(const uint8_t * data, uint32_t len);
+    bool is_valid_maxim(const uint8_t * data, uint32_t len);
 };
 
 #endif

@@ -25,7 +25,7 @@ SOFTWARE.
 #include "mbed.h"
 #include "Checksum.h"
 
-static const uint16_t crc16_table[] = {
+static const uint16_t crc16_modbus_table[] = {
     0X0000, 0XC0C1, 0XC181, 0X0140, 0XC301, 0X03C0, 0X0280, 0XC241,
     0XC601, 0X06C0, 0X0780, 0XC741, 0X0500, 0XC5C1, 0XC481, 0X0440,
     0XCC01, 0X0CC0, 0X0D80, 0XCD41, 0X0F00, 0XCFC1, 0XCE81, 0X0E40,
@@ -60,7 +60,26 @@ static const uint16_t crc16_table[] = {
     0X8201, 0X42C0, 0X4380, 0X8341, 0X4100, 0X81C1, 0X8081, 0X4040
 };
 
-Checksum::Checksum(){
+static const uint8_t crc8_maxim_table[] = {
+    0, 94, 188, 226, 97, 63, 221, 131, 194, 156, 126, 32, 163, 253, 31, 65,
+    157, 195, 33, 127, 252, 162, 64, 30, 95, 1, 227, 189, 62, 96, 130, 220,
+    35, 125, 159, 193, 66, 28, 254, 160, 225, 191, 93, 3, 128, 222, 60, 98,
+    190, 224, 2, 92, 223, 129, 99, 61, 124, 34, 192, 158, 29, 67, 161, 255,
+    70, 24, 250, 164, 39, 121, 155, 197, 132, 218, 56, 102, 229, 187, 89, 7,
+    219, 133, 103, 57, 186, 228, 6, 88, 25, 71, 165, 251, 120, 38, 196, 154,
+    101, 59, 217, 135, 4, 90, 184, 230, 167, 249, 27, 69, 198, 152, 122, 36,
+    248, 166, 68, 26, 153, 199, 37, 123, 58, 100, 134, 216, 91, 5, 231, 185,
+    140, 210, 48, 110, 237, 179, 81, 15, 78, 16, 242, 172, 47, 113, 147, 205,
+    17, 79, 173, 243, 112, 46, 204, 146, 211, 141, 111, 49, 178, 236, 14, 80,
+    175, 241, 19, 77, 206, 144, 114, 44, 109, 51, 209, 143, 12, 82, 176, 238,
+    50, 108, 142, 208, 83, 13, 239, 177, 240, 174, 76, 18, 145, 207, 45, 115,
+    202, 148, 118, 40, 171, 245, 23, 73, 8, 86, 180, 234, 105, 55, 213, 139,
+    87, 9, 235, 181, 54, 104, 138, 212, 149, 203, 41, 119, 244, 170, 72, 22,
+    233, 183, 85, 11, 136, 214, 52, 106, 43, 117, 151, 201, 74, 20, 246, 168,
+    116, 42, 200, 150, 21, 75, 169, 247, 182, 232, 10, 84, 215, 137, 107, 53
+};
+
+Checksum::Checksum() {
 }
 
 uint16_t Checksum::get_modbus(const uint8_t * data, uint32_t len) {
@@ -70,7 +89,7 @@ uint16_t Checksum::get_modbus(const uint8_t * data, uint32_t len) {
     while (len--) {
         temp = *data++ ^ result;
         result >>= 8;
-        result ^= crc16_table[temp];
+        result ^= crc16_modbus_table[temp];
     }
 
     return result;
@@ -98,16 +117,17 @@ bool Checksum::is_valid_xor(const uint8_t * data, uint32_t len) {
     return temp == data[len - 1];
 }
 
-uint8_t Checksum::get_maxim(uint8_t * data, uint32_t len) {
-    MbedCRC<0x31, 8> ct(0, 0, false, false);
-    uint32_t result = 0;
+uint8_t Checksum::get_maxim(const uint8_t * data, uint32_t len) {
+    uint8_t result = 0;
 
-    ct.compute(data, len, &result);
+    for (uint32_t i = 0; i < len; i++) {
+        result = crc8_maxim_table[data[i] ^ result];
+    }
 
-    return (uint8_t)result;
+    return result;
 }
 
-bool Checksum::is_valid_maxim(uint8_t * data, uint32_t len) {
+bool Checksum::is_valid_maxim(const uint8_t * data, uint32_t len) {
     uint8_t temp = get_maxim(data, len - 1);
 
     return temp == data[len - 1];
