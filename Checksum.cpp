@@ -79,7 +79,8 @@ static const uint8_t crc8_maxim_table[] = {
     116, 42, 200, 150, 21, 75, 169, 247, 182, 232, 10, 84, 215, 137, 107, 53
 };
 
-Checksum::Checksum() {
+Checksum::Checksum():
+    _crc32(0xFFFFFFFFL) {
 }
 
 uint16_t Checksum::get_modbus(const uint8_t * data, uint32_t len) {

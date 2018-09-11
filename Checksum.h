@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 #ifndef CHECKSUM_H
 #define CHECKSUM_H
 
@@ -35,6 +36,9 @@ class Checksum {
     bool is_valid_xor(const uint8_t * data, uint32_t len);
     uint8_t get_maxim(const uint8_t * data, uint32_t len);
     bool is_valid_maxim(const uint8_t * data, uint32_t len);
+
+  private:
+    uint32_t _crc32;
 };
 
-#endif
+#endif  // CHECKSUM_H
