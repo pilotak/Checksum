@@ -36,6 +36,8 @@ class Checksum {
     bool is_valid_xor(const uint8_t * data, uint32_t len);
     uint8_t get_maxim(const uint8_t * data, uint32_t len);
     bool is_valid_maxim(const uint8_t * data, uint32_t len);
+    uint8_t get_twos_compl(const uint8_t * data, uint32_t len);
+    bool is_valid_twos_compl(const uint8_t * data, uint32_t len);
 
   private:
     uint32_t _crc32;

@@ -133,3 +133,23 @@ bool Checksum::is_valid_maxim(const uint8_t * data, uint32_t len) {
 
     return temp == data[len - 1];
 }
+
+uint8_t Checksum::get_twos_compl(const uint8_t * data, uint32_t len) {
+    uint32_t sum = 0;
+
+    for (uint32_t i = 0; i < len; ++i) {
+        sum += data[i];
+    }
+
+    sum %= 256;
+
+    uint8_t twoscompl = ~(sum & 0xFF) + 1;
+
+    return twoscompl;
+}
+
+bool Checksum::is_valid_twos_compl(const uint8_t * data, uint32_t len) {
+    uint8_t temp = get_twos_compl(data, len - 1);
+
+    return temp == data[len - 1];
+}
