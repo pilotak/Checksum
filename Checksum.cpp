@@ -84,7 +84,7 @@ Checksum::Checksum():
 }
 
 uint16_t Checksum::get_modbus(const char * data, size_t len) {
-    char temp;
+    uint8_t temp;
     uint16_t result = 0xFFFF;
 
     while (len--) {
