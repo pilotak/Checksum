@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2018 Pavel Slama
+Copyright (c) 2020 Pavel Slama
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,14 +30,14 @@ SOFTWARE.
 class Checksum {
   public:
     Checksum();
-    uint16_t get_modbus(const char * data, size_t len);
-    bool is_valid_modbus(const char * data, size_t len);
-    char get_xor(const char * data, size_t len);
-    bool is_valid_xor(const char * data, size_t len);
-    char get_maxim(const char * data, size_t len);
-    bool is_valid_maxim(const char * data, size_t len);
-    char get_twos_compl(const char * data, size_t len);
-    bool is_valid_twos_compl(const char * data, size_t len);
+    uint16_t get_modbus(const void *data, size_t len);
+    bool is_valid_modbus(const void *data, size_t len);
+    uint8_t get_xor(const void *data, size_t len);
+    bool is_valid_xor(const void *data, size_t len);
+    uint8_t get_maxim(const void *data, size_t len);
+    bool is_valid_maxim(const void *data, size_t len);
+    uint8_t get_twos_compl(const void *data, size_t len);
+    bool is_valid_twos_compl(const void *data, size_t len);
 
   private:
     uint32_t _crc32;

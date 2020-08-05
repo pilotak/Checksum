@@ -60,7 +60,7 @@ static const uint16_t crc16_modbus_table[] = {
     0X8201, 0X42C0, 0X4380, 0X8341, 0X4100, 0X81C1, 0X8081, 0X4040
 };
 
-static const char crc8_maxim_table[] = {
+static const uint8_t crc8_maxim_table[] = {
     0, 94, 188, 226, 97, 63, 221, 131, 194, 156, 126, 32, 163, 253, 31, 65,
     157, 195, 33, 127, 252, 162, 64, 30, 95, 1, 227, 189, 62, 96, 130, 220,
     35, 125, 159, 193, 66, 28, 254, 160, 225, 191, 93, 3, 128, 222, 60, 98,
@@ -83,12 +83,13 @@ Checksum::Checksum():
     _crc32(0xFFFFFFFFL) {
 }
 
-uint16_t Checksum::get_modbus(const char * data, size_t len) {
+uint16_t Checksum::get_modbus(const void *data, size_t len) {
     uint8_t temp;
     uint16_t result = 0xFFFF;
+    const auto *buffer = static_cast<const uint8_t *>(data);
 
     while (len--) {
-        temp = *data++ ^ result;
+        temp = *buffer++ ^ result;
         result >>= 8;
         result ^= crc16_modbus_table[temp];
     }
@@ -96,49 +97,55 @@ uint16_t Checksum::get_modbus(const char * data, size_t len) {
     return result;
 }
 
-bool Checksum::is_valid_modbus(const char * data, size_t len) {
+bool Checksum::is_valid_modbus(const void *data, size_t len) {
     uint16_t temp = get_modbus(data, len - 2);
+    const auto *buffer = static_cast<const uint8_t *>(data);
 
-    return temp == ((data[len - 1] << 8) | data[len - 2]);
+    return temp == ((buffer[len - 1] << 8) | buffer[len - 2]);
 }
 
-char Checksum::get_xor(const char * data, size_t len) {
-    char result = 0;
+uint8_t Checksum::get_xor(const void *data, size_t len) {
+    uint8_t result = 0;
+    const auto *buffer = static_cast<const uint8_t *>(data);
 
     for (uint32_t i = 0 ; i < len ; i++) {
-        result ^= data[i];
+        result ^= buffer[i];
     }
 
     return result;
 }
 
-bool Checksum::is_valid_xor(const char * data, size_t len) {
-    char temp = get_xor(data, len - 1);
+bool Checksum::is_valid_xor(const void *data, size_t len) {
+    uint8_t temp = get_xor(data, len - 1);
+    const auto *buffer = static_cast<const uint8_t *>(data);
 
-    return temp == data[len - 1];
+    return temp == buffer[len - 1];
 }
 
-char Checksum::get_maxim(const char * data, size_t len) {
+uint8_t Checksum::get_maxim(const void *data, size_t len) {
     char result = 0;
+    const auto *buffer = static_cast<const uint8_t *>(data);
 
     for (uint32_t i = 0; i < len; i++) {
-        result = crc8_maxim_table[data[i] ^ result];
+        result = crc8_maxim_table[buffer[i] ^ result];
     }
 
     return result;
 }
 
-bool Checksum::is_valid_maxim(const char * data, size_t len) {
+bool Checksum::is_valid_maxim(const void *data, size_t len) {
     char temp = get_maxim(data, len - 1);
+    const auto *buffer = static_cast<const uint8_t *>(data);
 
-    return temp == data[len - 1];
+    return temp == buffer[len - 1];
 }
 
-char Checksum::get_twos_compl(const char * data, size_t len) {
+uint8_t Checksum::get_twos_compl(const void *data, size_t len) {
     uint32_t sum = 0;
+    const auto *buffer = static_cast<const uint8_t *>(data);
 
     for (uint32_t i = 0; i < len; ++i) {
-        sum += data[i];
+        sum += buffer[i];
     }
 
     sum %= 256;
@@ -148,8 +155,9 @@ char Checksum::get_twos_compl(const char * data, size_t len) {
     return twoscompl;
 }
 
-bool Checksum::is_valid_twos_compl(const char * data, size_t len) {
+bool Checksum::is_valid_twos_compl(const void *data, size_t len) {
     char temp = get_twos_compl(data, len - 1);
+    const auto *buffer = static_cast<const uint8_t *>(data);
 
-    return temp == data[len - 1];
+    return temp == buffer[len - 1];
 }
