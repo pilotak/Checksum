@@ -134,17 +134,21 @@ uint8_t Checksum::get_maxim(const void *data, size_t len) {
 }
 
 bool Checksum::is_valid_maxim(const void *data, size_t len) {
+    if (len == 0) {
+        return false;
+    }
+
     char temp = get_maxim(data, len - 1);
     const auto *buffer = static_cast<const uint8_t *>(data);
 
     return temp == buffer[len - 1];
 }
 
-uint8_t Checksum::get_twos_compl(const void *data, size_t len) {
-    uint32_t sum = 0;
+uint8_t Checksum::get_twos_compl(const void *data, size_t len, uint32_t initial) {
+    uint32_t sum = initial;
     const auto *buffer = static_cast<const uint8_t *>(data);
 
-    for (uint32_t i = 0; i < len; ++i) {
+    for (size_t i = 0; i < len; ++i) {
         sum += buffer[i];
     }
 
@@ -155,8 +159,12 @@ uint8_t Checksum::get_twos_compl(const void *data, size_t len) {
     return twoscompl;
 }
 
-bool Checksum::is_valid_twos_compl(const void *data, size_t len) {
-    char temp = get_twos_compl(data, len - 1);
+bool Checksum::is_valid_twos_compl(const void *data, size_t len, uint32_t initial) {
+    if (len == 0) {
+        return false;
+    }
+
+    char temp = get_twos_compl(data, len - 1, initial);
     const auto *buffer = static_cast<const uint8_t *>(data);
 
     return temp == buffer[len - 1];

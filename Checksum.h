@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2020 Pavel Slama
+Copyright (c) 2023 Pavel S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,8 +36,8 @@ class Checksum {
     bool is_valid_xor(const void *data, size_t len);
     uint8_t get_maxim(const void *data, size_t len);
     bool is_valid_maxim(const void *data, size_t len);
-    uint8_t get_twos_compl(const void *data, size_t len);
-    bool is_valid_twos_compl(const void *data, size_t len);
+    uint8_t get_twos_compl(const void *data, size_t len, uint32_t initial = 0);
+    bool is_valid_twos_compl(const void *data, size_t len, uint32_t initial = 0);
 
   private:
     uint32_t _crc32;
